@@ -45,7 +45,7 @@ if __name__=='__main__':
 			reta,retb,retc,retd=nn_distance(inp1,inp2)
 			loss=tf.reduce_sum(reta)+tf.reduce_sum(retc)
 			train=tf.train.GradientDescentOptimizer(learning_rate=0.05).minimize(loss)
-		sess.run(tf.initialize_all_variables())
+		sess.run(tf.global_variables_initializer())
 		t0=time.time()
 		t1=t0
 		best=1e100
@@ -53,7 +53,7 @@ if __name__=='__main__':
 			trainloss,_=sess.run([loss,train])
 			newt=time.time()
 			best=min(best,newt-t1)
-			print i,trainloss,(newt-t0)/(i+1),best
+			print(i,trainloss,(newt-t0)/(i+1),best)
 			t1=newt
 		#print sess.run([inp1,retb,inp2,retd])
 		#grads=compute_gradient([inp1,inp2],[(16,32,3),(16,32,3)],loss,(1,),[xyz1,xyz2])
@@ -74,4 +74,3 @@ if __name__=='__main__':
 		#idx2=((xyz2[:,samples,None,:]-xyz1[:,None,:,:])**2).sum(axis=-1).argmin(axis=-1)
 		#print np.abs(dist2-c[:,samples]).max()
 		#print np.abs(idx2-d[:,samples]).max()
-

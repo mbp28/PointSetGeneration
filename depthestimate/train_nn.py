@@ -11,7 +11,7 @@ import time
 import zlib
 import socket
 import threading
-import Queue
+import queue
 import sys
 import tf_nndistance
 import cPickle as pickle
@@ -78,7 +78,7 @@ def build_graph(resourceid):
 		x5=tflearn.layers.conv.conv_2d(x5,256,(3,3),strides=1,activation='linear',weight_decay=1e-5,regularizer='L2')
 		x=tf.nn.relu(tf.add(x,x5))
 		x=tflearn.layers.conv.conv_2d(x,256,(3,3),strides=1,activation='relu',weight_decay=1e-5,regularizer='L2')
-		x5=x  
+		x5=x
 		x=tflearn.layers.conv.conv_2d_transpose(x,128,[5,5],[12,16],strides=2,activation='linear',weight_decay=1e-5,regularizer='L2')
 #12 16
 		x4=tflearn.layers.conv.conv_2d(x4,128,(3,3),strides=1,activation='linear',weight_decay=1e-5,regularizer='L2')
@@ -135,7 +135,7 @@ def build_graph(resourceid):
 		x5=tflearn.layers.conv.conv_2d(x5,256,(3,3),strides=1,activation='linear',weight_decay=1e-5,regularizer='L2')
 		x=tf.nn.relu(tf.add(x,x5))
 		x=tflearn.layers.conv.conv_2d(x,256,(3,3),strides=1,activation='relu',weight_decay=1e-5,regularizer='L2')
-		x5=x  
+		x5=x
 		x=tflearn.layers.conv.conv_2d_transpose(x,128,[5,5],[12,16],strides=2,activation='linear',weight_decay=1e-5,regularizer='L2')
 #12 16
 		x4=tflearn.layers.conv.conv_2d(x4,128,(3,3),strides=1,activation='linear',weight_decay=1e-5,regularizer='L2')
@@ -219,14 +219,14 @@ def main(resourceid,keyname):
 				showloss=validloss
 				showloss1=validloss1
 				showloss2=validloss2
-			print >>fout,bno,trainloss_accs[0]/trainloss_acc0,trainloss_accs[1]/trainloss_acc0,trainloss_accs[2]/trainloss_acc0,showloss,showloss1,showloss2,validloss_accs[0]/validloss_acc0,validloss_accs[1]/validloss_acc0,validloss_accs[2]/validloss_acc0,total_loss-showloss
+			print(bno,trainloss_accs[0]/trainloss_acc0,trainloss_accs[1]/trainloss_acc0,trainloss_accs[2]/trainloss_acc0,showloss,showloss1,showloss2,validloss_accs[0]/validloss_acc0,validloss_accs[1]/validloss_acc0,validloss_accs[2]/validloss_acc0,total_loss-showloss, file=fout)
 			if bno%128==0:
 				fout.flush()
 			if time.time()-lastsave>900:
 				saver.save(sess,'%s/'%dumpdir+keyname+".ckpt")
 				lastsave=time.time()
-			print bno,'t',trainloss_accs[0]/trainloss_acc0,trainloss_accs[1]/trainloss_acc0,trainloss_accs[2]/trainloss_acc0,'v',validloss_accs[0]/validloss_acc0,validloss_accs[1]/validloss_acc0,validloss_accs[2]/validloss_acc0,total_loss-showloss,t1-t0,t2-t1,time.time()-t0,fetchworker.queue.qsize()
-		saver.save(sess,'%s/'%dumpdir+keyname+".ckpt") 
+			print(bno,'t',trainloss_accs[0]/trainloss_acc0,trainloss_accs[1]/trainloss_acc0,trainloss_accs[2]/trainloss_acc0,'v',validloss_accs[0]/validloss_acc0,validloss_accs[1]/validloss_acc0,validloss_accs[2]/validloss_acc0,total_loss-showloss,t1-t0,t2-t1,time.time()-t0,fetchworker.queue.qsize())
+		saver.save(sess,'%s/'%dumpdir+keyname+".ckpt")
 
 def dumppredictions(resourceid,keyname,valnum):
 	img_inp,x,pt_gt,loss,optimizer,batchno,batchnoinc,mindist,loss_nodecay,dists_forward,dists_backward,dist0=build_graph(resourceid)
@@ -251,7 +251,7 @@ def dumppredictions(resourceid,keyname,valnum):
 			cnt+=1
 			pred,distmap=sess.run([x,mindist],feed_dict={img_inp:data,pt_gt:ptcloud})
 			pickle.dump((i,data,ptcloud,pred,distmap),fout,protocol=-1)
-			print i,'time',time.time()-t0,cnt
+			print(i,'time',time.time()-t0,cnt)
 			if cnt>=valnum:
 				break
 	fout.close()
@@ -275,8 +275,8 @@ if __name__=='__main__':
 	assert os.path.exists(datadir),"data dir not exists"
 	os.system("mkdir -p %s"%dumpdir)
 	fetchworker=BatchFetcher(datadir)
-	print "datadir=%s dumpdir=%s num=%d cmd=%s started"%(datadir,dumpdir,valnum,cmd)
-	
+	print("datadir=%s dumpdir=%s num=%d cmd=%s started"%(datadir,dumpdir,valnum,cmd))
+
 	keyname=os.path.basename(__file__).rstrip('.py')
 	try:
 		if cmd=="train":
