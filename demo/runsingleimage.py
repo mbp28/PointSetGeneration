@@ -1,7 +1,7 @@
 import cv2
 import time
 import numpy as np
-import cPickle as pickle
+import pickle
 import tensorflow as tf
 import tflearn
 import sys
@@ -72,20 +72,20 @@ def loadModel(weightsfile):
 	fin=open(weightsfile,'rb')
 	while True:
 		try:
-			v,p=pickle.load(fin)
+			v,p=pickle.load(fin, encoding='bytes')
 		except EOFError:
 			break
 		loaddict[v]=p
 	fin.close()
 	for t in tf.trainable_variables():
 		if t.name not in loaddict:
-			print 'missing',t.name
+			print('missing',t.name)
 		else:
 			sess.run(t.assign(loaddict[t.name]))
 			del loaddict[t.name]
-	for k in loaddict.iteritems():
+	for k in loaddict.items():
 		if k[0]!='Variable:0':
-			print 'unused',k
+			print('unused',k)
 	return (sess,img_inp,x)
 
 def run_image(model,img_in,img_mask):
@@ -104,4 +104,4 @@ if __name__=='__main__':
 	fout=open(sys.argv[1]+'.txt','w')
 	ret=run_image(model,img_in,img_mask)
 	for x,y,z in ret:
-		print >>fout,x,y,z
+		print(x,y,z,file=fout)
