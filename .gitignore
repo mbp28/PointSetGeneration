@@ -106,3 +106,7 @@ venv.bak/
 # my directories
 /data
 /results
+
+# added by me
+*.DS_Store
+*twobranch_v1.pkl
