@@ -109,4 +109,7 @@ venv.bak/
 
 # added by me
 *.DS_Store
+*.pkl
+*.png
+*.txt
 *twobranch_v1.pkl
